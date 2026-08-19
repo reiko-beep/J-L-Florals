@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Contact Us</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* Contact Page */
+
+        .contact-title {
+            color: #88A5BC;
+            text-align: center;
+            font-size: 40px;
+            margin-top: 40px;
+        }
+
+        .contact-subtitle {
+            text-align: center;
+            color: #444;
+            font-size: 18px;
+            margin-bottom: 35px;
+        }
+
+        .contact-container {
+            width: 80%;
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        /* FORM */
+
+        .contact-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            flex: 1;
+        }
+
+        .contact-form h2 {
+            color: #D8959B;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #344C3D;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D0DBE7;
+            border-radius: 8px;
+            font-family: Georgia, serif;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #D8959B;
+        }
+
+        /* RADIO BUTTONS */
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            font-weight: normal;
+        }
+
+        .radio-group input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        /* CHECKBOX */
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            margin: 0;
+        }
+
+        /* BUTTONS */
+
+        .form-buttons {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(
+                45deg,
+                #D0DBE7,
+                #D8959B
+            );
+
+            color: white;
+            padding: 13px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .reset-btn {
+            background: #344C3D;
+            color: white;
+            padding: 13px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover,
+        .reset-btn:hover {
+            opacity: 0.85;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+        }
+
+        /* BUSINESS INFORMATION */
+
+        .business-info {
+            background: #F4F0EB;
+            padding: 30px;
+            border-radius: 15px;
+            flex: 0.7;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .business-info h2 {
+            color: #344C3D;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            margin-bottom: 20px;
+        }
+
+        .info-item h3 {
+            color: #D8959B;
+            margin-bottom: 5px;
+        }
+
+        .info-item p {
+            text-align: left;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* SOCIAL MEDIA */
+
+        .social-media {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .social-media h3 {
+            color: #344C3D;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            background: #344C3D;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 17px;
+            transition: 0.2s;
+        }
+
+        .social-links a:hover {
+            background: #D8959B;
+            transform: translateY(-3px);
+        }
+
+        /* POPUP */
+
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.45);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-box {
+            background: #F4F0EB;
+            width: 380px;
+            max-width: 85%;
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+
+        .popup-box h2 {
+            color: #D8959B;
+        }
+
+        .popup-box p {
+            color: #444;
+            font-size: 17px;
+        }
+
+        .popup-button {
+            margin-top: 15px;
+            background: #344C3D;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+
+            .contact-container {
+                flex-direction: column;
+                width: 90%;
+            }
+
+            .contact-form,
+            .business-info {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVIGATION -->
+
+    <nav>
+
+        <a href="homepage.html" target="_blank">Home</a>
+        <a href="product.html" target="_blank">Products</a>
+        <a href="gallery.html" target="_blank">Gallery</a>
+        <a href="contact.html" target="_blank">Contact</a>
+        <a href="aboutus.html" target="_blank">About Us</a>
+
+    </nav>
+
+
+    <!-- TITLE -->
+
+    <h1 class="contact-title">
+        Contact Us
+    </h1>
+
+    <p class="contact-subtitle">
+        We'd love to hear from you! Send us an inquiry and we'll get back to you.
+    </p>
+
+
+    <!-- CONTACT CONTENT -->
+
+    <div class="contact-container">
+
+
+        <!-- CUSTOMER INQUIRY FORM -->
+
+        <div class="contact-form">
+
+            <h2>
+                Customer Inquiry
+            </h2>
+
+
+            <form onsubmit="submitForm(event)">
+
+
+                <!-- FULL NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required>
+
+                </div>
+
+
+                <!-- CONTACT NUMBER -->
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Contact Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your contact number"
+                        required>
+
+                </div>
+
+
+                <!-- PRODUCT SELECTION -->
+
+                <div class="form-group">
+
+                    <label for="product">
+                        Product / Service Selection
+                    </label>
+
+                    <select id="product" name="product" required>
+
+                        <option value="">
+                            -- Select a product or service --
+                        </option>
+
+                        <option value="bouquet">
+                            Custom Bouquet
+                        </option>
+
+                        <option value="roses">
+                            Rose Bouquet
+                        </option>
+
+                        <option value="tulips">
+                            Tulip Bouquet
+                        </option>
+
+                        <option value="sunflowers">
+                            Sunflower Bouquet
+                        </option>
+
+                        <option value="flower-arrangement">
+                            Flower Arrangement
+                        </option>
+
+                        <option value="other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <div class="form-group">
+
+                    <label for="message">
+                        Message
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        placeholder="Write your inquiry here..."
+                        required></textarea>
+
+                </div>
+
+
+                <!-- RADIO BUTTON -->
+
+                <div class="form-group">
+
+                    <label>
+                        Preferred Contact Method
+                    </label>
+
+                    <div class="radio-group">
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="contactMethod"
+                                value="email"
+                                required>
+                            Email
+                        </label>
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="contactMethod"
+                                value="phone">
+                            Phone
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CHECKBOX -->
+
+                <div class="form-group">
+
+                    <div class="checkbox-group">
+
+                        <input
+                            type="checkbox"
+                            id="updates"
+                            name="updates">
+
+                        <label for="updates">
+                            I would like to receive updates from J&L Florals.
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="form-buttons">
+
+                    <button
+                        type="submit"
+                        class="submit-btn">
+
+                        Submit
+
+                    </button>
+
+                    <button
+                        type="reset"
+                        class="reset-btn">
+
+                        Reset
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- BUSINESS INFORMATION -->
+
+        <div class="business-info">
+
+            <h2>
+                J&L Florals
+            </h2>
+
+
+            <div class="info-item">
+
+                <h3>
+                    📍 Business Address
+                </h3>
+
+                <p>
+                    J&L Florals<br>
+                    Danarose Residences<br>
+                    Barangay Molino III<br>
+                    Bacoor City, Cavite 4102<br>
+                    Philippines
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <h3>
+                    📞 Contact Number
+                </h3>
+
+                <p>
+                    0926 101 2167
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <h3>
+                    ✉ Email Address
+                </h3>
+
+                <p>
+                    jnlflorals@gmail.com
+                </p>
+
+            </div>
+
+
+            <!-- SOCIAL MEDIA -->
+
+            <div class="social-media">
+
+                <h3>
+                    Follow Us
+                </h3>
+
+                <div class="social-links">
+
+                    <a
+                        href="https://www.facebook.com/wellzzxx" target="_blank"
+                        title="Facebook">
+                        f
+                    </a>
+
+                    <a
+                        href="https://www.instagram.com/jvwelzx" target="_blank"
+                        title="Instagram">
+                        ◎
+                    </a>
+
+                    <a
+                        href="mailto:jazzrine350@gmail.com" target="_blank"
+                        title="Email">
+                        ✉
+                    </a>
+
+                    <a
+                        href="https://maps.app.goo.gl/em5eQuiaTBwS3Hs18" target="_blank"
+                        title="Location">
+                        ●
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- SUCCESS POPUP -->
+
+    <div
+        class="popup"
+        id="successPopup">
+
+        <div class="popup-box">
+
+            <h2>
+                Message Sent!
+            </h2>
+
+            <p>
+                Thank you for contacting J&L Florals!
+                We have received your inquiry.
+            </p>
+
+            <button
+                class="popup-button"
+                onclick="closePopup()">
+
+                OK
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            &copy; 2026 J&L Florals. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        function submitForm(event) {
+
+            event.preventDefault();
+
+            document.getElementById(
+                "successPopup"
+            ).style.display = "flex";
+
+        }
+
+
+        function closePopup() {
+
+            document.getElementById(
+                "successPopup"
+            ).style.display = "none";
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

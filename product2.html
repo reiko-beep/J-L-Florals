@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Build Your Bouquet</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* =========================
+           BOUQUET BUILDER
+        ========================= */
+
+        .builder-title {
+            color: #88A5BC;
+            text-align: center;
+            font-size: 40px;
+            margin-top: 40px;
+            margin-bottom: 10px;
+        }
+
+        .builder-subtitle {
+            text-align: center;
+            color: #444;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+
+        /* =========================
+           BUILDER LAYOUT
+        ========================= */
+
+        .bouquet-builder {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            padding: 20px 40px 50px;
+        }
+
+
+        /* =========================
+           FLOWER SELECTION
+        ========================= */
+
+        .flower-selection {
+            width: 300px;
+            background: #FFFFFF;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+        }
+
+        .flower-selection h2 {
+            color: #D8959B;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .flower-selection p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .flower-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+
+        /* Individual flower */
+
+        .flower {
+            background: #F4F0EB;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: grab;
+            transition: 0.2s;
+        }
+
+        .flower:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        }
+
+        .flower:active {
+            cursor: grabbing;
+        }
+
+        .flower img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .flower span {
+            display: block;
+            margin-top: 7px;
+            color: #344C3D;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           BOUQUET AREA
+        ========================= */
+
+        .bouquet-container {
+            text-align: center;
+        }
+
+        .bouquet-container h2 {
+            color: #D8959B;
+            font-size: 30px;
+            margin-top: 0;
+        }
+
+        #bouquet {
+            width: 550px;
+            height: 600px;
+
+            background: #FFFFFF;
+
+            border: 3px dashed #D8959B;
+            border-radius: 20px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        #bouquet.drag-over {
+            background: #F8EDEF;
+            border-color: #344C3D;
+        }
+
+
+        /* =========================
+           FLOWERS INSIDE BOUQUET
+        ========================= */
+
+        .bouquet-flower {
+            position: absolute;
+
+            width: 130px;
+            height: 130px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+
+            cursor: grab;
+
+            user-select: none;
+
+            transition: box-shadow 0.15s;
+        }
+
+        .bouquet-flower:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.20);
+        }
+
+        /* Selected flower */
+
+        .bouquet-flower.selected {
+            outline: 3px solid #D8959B;
+            outline-offset: 3px;
+        }
+
+
+        /* =========================
+           FLOWER CONTROLS
+        ========================= */
+
+        .flower-controls {
+            display: none;
+
+            margin-top: 15px;
+            padding: 12px;
+
+            background: #F4F0EB;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 10px
+                rgba(0,0,0,0.10);
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+        .flower-controls.active {
+            display: flex;
+        }
+
+        .flower-controls span {
+            color: #344C3D;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .flower-controls button {
+            background: #344C3D;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 25px;
+
+            padding: 9px 14px;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .flower-controls button:hover {
+            opacity: 0.85;
+
+            transform: translateY(-2px);
+        }
+
+        .flower-controls .delete-flower {
+            background: #D8959B;
+        }
+
+
+        /* =========================
+           WRAPPING PAPER
+        ========================= */
+
+        .wrapper {
+            position: absolute;
+
+            bottom: -20px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 300px;
+            height: 220px;
+
+            background: #D0DBE7;
+
+            clip-path: polygon(
+                10% 0,
+                90% 0,
+                100% 100%,
+                0 100%
+            );
+
+            z-index: 50;
+
+            pointer-events: none;
+        }
+
+
+        /* Ribbon */
+
+        .ribbon {
+            position: absolute;
+
+            bottom: 90px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 100px;
+            height: 25px;
+
+            background: #344C3D;
+
+            z-index: 51;
+
+            pointer-events: none;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .builder-buttons {
+            margin-top: 20px;
+        }
+
+        .clear-btn {
+            background: #344C3D;
+
+            color: white;
+
+            padding: 15px 25px;
+
+            border: none;
+
+            border-radius: 50px;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            margin-right: 8px;
+
+            transition: 0.3s;
+        }
+
+        .clear-btn:hover {
+            opacity: 0.9;
+
+            box-shadow:
+                0 6px 15px
+                rgba(0,0,0,0.2);
+        }
+
+        .gradient-btn {
+            background:
+                linear-gradient(
+                    45deg,
+                    #D0DBE7,
+                    #D8959B
+                );
+
+            color: white;
+
+            padding: 15px 30px;
+
+            border: none;
+
+            border-radius: 50px;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .gradient-btn:hover {
+            opacity: 0.9;
+
+            box-shadow:
+                0 6px 15px
+                rgba(0,0,0,0.3);
+        }
+
+
+        /* =========================
+           ORDER POPUP
+        ========================= */
+
+        .popup {
+            display: none;
+
+            position: fixed;
+
+            z-index: 1000;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+                rgba(0,0,0,0.45);
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-box {
+            background: #F4F0EB;
+
+            width: 380px;
+
+            max-width: 85%;
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0,0,0,0.25);
+
+            animation: popupAppear 0.25s ease;
+        }
+
+        .popup-box h2 {
+            color: #D8959B;
+
+            font-size: 30px;
+
+            margin-bottom: 15px;
+        }
+
+        .popup-box p {
+            color: #444;
+
+            font-size: 17px;
+
+            line-height: 1.5;
+        }
+
+        .popup-button {
+            margin-top: 20px;
+
+            background: #344C3D;
+
+            color: white;
+
+            padding: 12px 30px;
+
+            border: none;
+
+            border-radius: 30px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+        }
+
+        .popup-button:hover {
+            opacity: 0.85;
+        }
+
+
+        /* Popup animation */
+
+        @keyframes popupAppear {
+
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .bouquet-builder {
+                flex-direction: column;
+
+                align-items: center;
+            }
+
+            .flower-selection {
+                width: 80%;
+            }
+
+            #bouquet {
+                width: 90vw;
+
+                height: 550px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav>
+
+        <a href="homepage.html" target="_blank">
+            Home
+        </a>
+
+        <a href="product.html" target="_blank">
+            Products
+        </a>
+
+        <a href="gallery.html" target="_blank">
+            Gallery
+        </a>
+
+        <a href="contact.html" target="_blank">
+            Contact
+        </a>
+
+        <a href="#">
+            About Us
+        </a>
+
+    </nav>
+
+
+    <!-- =========================
+         PAGE TITLE
+    ========================= -->
+
+    <h1 class="builder-title">
+        Build Your Own Bouquet
+    </h1>
+
+    <p class="builder-subtitle">
+        Drag your favorite flowers into the bouquet
+        and create something beautiful.
+    </p>
+
+
+    <!-- =========================
+         BOUQUET BUILDER
+    ========================= -->
+
+    <div class="bouquet-builder">
+
+
+        <!-- FLOWER MENU -->
+
+        <div class="flower-selection">
+
+            <h2>
+                Choose Your Flowers
+            </h2>
+
+            <p>
+                Drag a flower into the bouquet.
+            </p>
+
+
+            <div class="flower-list">
+
+
+                <!-- ROSE -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/rose.png">
+
+                    <img
+                        src="Images/rose.png"
+                        alt="Rose">
+
+                    <span>
+                        Rose
+                    </span>
+
+                </div>
+
+
+                <!-- TULIP -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/tulip.png">
+
+                    <img
+                        src="Images/tulip.png"
+                        alt="Tulip">
+
+                    <span>
+                        Tulip
+                    </span>
+
+                </div>
+
+
+                <!-- DAISY -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/daisy.png">
+
+                    <img
+                        src="Images/daisy.png"
+                        alt="Daisy">
+
+                    <span>
+                        Daisy
+                    </span>
+
+                </div>
+
+
+                <!-- LILY -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/lily.png">
+
+                    <img
+                        src="Images/lily.png"
+                        alt="Lily">
+
+                    <span>
+                        Lily
+                    </span>
+
+                </div>
+
+
+                <!-- SUNFLOWER -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/sunflower.png">
+
+                    <img
+                        src="Images/sunflower.png"
+                        alt="Sunflower">
+
+                    <span>
+                        Sunflower
+                    </span>
+
+                </div>
+
+
+                <!-- PEONY -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/peony.png">
+
+                    <img
+                        src="Images/peony.png"
+                        alt="Peony">
+
+                    <span>
+                        Peony
+                    </span>
+
+                </div>
+
+
+                <!-- ORCHID -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/orchid.png">
+
+                    <img
+                        src="Images/orchid.png"
+                        alt="Orchid">
+
+                    <span>
+                        Orchid
+                    </span>
+
+                </div>
+
+
+                <!-- CHERRY BLOSSOM -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/cherryblossom.png">
+
+                    <img
+                        src="Images/cherryblossom.png"
+                        alt="Cherry Blossom">
+
+                    <span>
+                        Cherry Blossom
+                    </span>
+
+                </div>
+
+
+                <!-- LAVENDER -->
+
+                <div
+                    class="flower"
+                    draggable="true"
+                    data-image="Images/lavender.png">
+
+                    <img
+                        src="Images/lavender.png"
+                        alt="Lavender">
+
+                    <span>
+                        Lavender
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             BOUQUET
+        ========================= -->
+
+        <div class="bouquet-container">
+
+            <h2>
+                Your Bouquet
+            </h2>
+
+
+            <div id="bouquet">
+
+                <!-- Flowers will be placed here -->
+
+                <div class="wrapper"></div>
+
+                <div class="ribbon"></div>
+
+            </div>
+
+
+            <!-- =========================
+                 FLOWER CONTROLS
+            ========================= -->
+
+            <div
+                class="flower-controls"
+                id="flowerControls">
+
+                <span>
+                    Selected:
+                </span>
+
+                <button
+                    onclick="rotateFlower(-15)">
+
+                    ↶ Rotate
+
+                </button>
+
+                <button
+                    onclick="rotateFlower(15)">
+
+                    Rotate ↷
+
+                </button>
+
+                <button
+                    onclick="resizeFlower(-10)">
+
+                    − Size
+
+                </button>
+
+                <button
+                    onclick="resizeFlower(10)">
+
+                    + Size
+
+                </button>
+
+                <button
+                    class="delete-flower"
+                    onclick="deleteFlower()">
+
+                    🗑 Delete
+
+                </button>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="builder-buttons">
+
+                <button
+                    class="clear-btn"
+                    onclick="clearBouquet()">
+
+                    Clear
+
+                </button>
+
+
+                <button
+                    class="gradient-btn"
+                    onclick="finishBouquet()">
+
+                    Finish Bouquet
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         ORDER POPUP
+    ========================= -->
+
+    <div
+        class="popup"
+        id="orderPopup">
+
+        <div class="popup-box">
+
+            <h2 id="popupTitle">
+                Order Placed! 🌸
+            </h2>
+
+            <p id="popupMessage">
+                Your beautiful bouquet has
+                been placed successfully!
+            </p>
+
+            <button
+                class="popup-button"
+                onclick="closePopup()">
+
+                OK
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        <p>
+            &copy; 2026 J&L Florals.
+            All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+
+        const flowers =
+            document.querySelectorAll(".flower");
+
+
+        const bouquet =
+            document.getElementById("bouquet");
+
+
+        let selectedFlower = null;
+
+
+        /* =========================
+           DRAG FLOWER
+        ========================= */
+
+        flowers.forEach(function(flower) {
+
+            flower.addEventListener(
+                "dragstart",
+
+                function(event) {
+
+                    event.dataTransfer.setData(
+                        "text/plain",
+                        this.dataset.image
+                    );
+
+                }
+
+            );
+
+        });
+
+
+        /* =========================
+           ALLOW DROP
+        ========================= */
+
+        bouquet.addEventListener(
+            "dragover",
+
+            function(event) {
+
+                event.preventDefault();
+
+                bouquet.classList.add(
+                    "drag-over"
+                );
+
+            }
+
+        );
+
+
+        bouquet.addEventListener(
+            "dragleave",
+
+            function() {
+
+                bouquet.classList.remove(
+                    "drag-over"
+                );
+
+            }
+
+        );
+
+
+        /* =========================
+           DROP FLOWER
+        ========================= */
+
+        bouquet.addEventListener(
+            "drop",
+
+            function(event) {
+
+                event.preventDefault();
+
+                bouquet.classList.remove(
+                    "drag-over"
+                );
+
+
+                const image =
+                    event.dataTransfer
+                    .getData("text/plain");
+
+
+                if (!image) {
+                    return;
+                }
+
+
+                const flower =
+                    document.createElement("img");
+
+
+                flower.src = image;
+
+                flower.className =
+                    "bouquet-flower";
+
+
+                /* Default size */
+
+                flower.dataset.size = 130;
+
+
+                const rect =
+                    bouquet.getBoundingClientRect();
+
+
+                let x =
+                    event.clientX -
+                    rect.left -
+                    65;
+
+
+                let y =
+                    event.clientY -
+                    rect.top -
+                    65;
+
+
+                /* Keep flower inside bouquet */
+
+                x = Math.max(
+                    0,
+                    Math.min(
+                        x,
+                        bouquet.clientWidth - 130
+                    )
+                );
+
+
+                y = Math.max(
+                    0,
+                    Math.min(
+                        y,
+                        bouquet.clientHeight - 230
+                    )
+                );
+
+
+                flower.style.left =
+                    x + "px";
+
+
+                flower.style.top =
+                    y + "px";
+
+
+                /* Random starting rotation */
+
+                const rotation =
+                    Math.floor(
+                        Math.random() * 30
+                    ) - 15;
+
+
+                flower.dataset.rotation =
+                    rotation;
+
+
+                flower.style.transform =
+                    "rotate(" +
+                    rotation +
+                    "deg)";
+
+
+                /* Put flower behind wrapper */
+
+                bouquet.insertBefore(
+                    flower,
+                    bouquet.querySelector(
+                        ".wrapper"
+                    )
+                );
+
+
+                makeMovable(flower);
+
+
+                /* Automatically select new flower */
+
+                selectFlower(flower);
+
+            }
+
+        );
+
+
+        /* =========================
+           SELECT FLOWER
+        ========================= */
+
+        function selectFlower(flower) {
+
+            document
+                .querySelectorAll(
+                    ".bouquet-flower"
+                )
+                .forEach(function(item) {
+
+                    item.classList.remove(
+                        "selected"
+                    );
+
+                });
+
+
+            selectedFlower = flower;
+
+
+            selectedFlower.classList.add(
+                "selected"
+            );
+
+
+            document
+                .getElementById(
+                    "flowerControls"
+                )
+                .classList.add("active");
+
+        }
+
+
+        /* =========================
+           MOVE FLOWERS
+        ========================= */
+
+        function makeMovable(flower) {
+
+            let offsetX = 0;
+            let offsetY = 0;
+
+
+            flower.addEventListener(
+                "mousedown",
+
+                function(event) {
+
+                    /* Select flower */
+
+                    selectFlower(flower);
+
+
+                    event.preventDefault();
+
+
+                    const rect =
+                        flower.getBoundingClientRect();
+
+
+                    offsetX =
+                        event.clientX -
+                        rect.left;
+
+
+                    offsetY =
+                        event.clientY -
+                        rect.top;
+
+
+                    function move(event) {
+
+                        const bouquetRect =
+                            bouquet.getBoundingClientRect();
+
+
+                        let x =
+                            event.clientX -
+                            bouquetRect.left -
+                            offsetX;
+
+
+                        let y =
+                            event.clientY -
+                            bouquetRect.top -
+                            offsetY;
+
+
+                        const size =
+                            parseInt(
+                                flower.dataset.size ||
+                                130
+                            );
+
+
+                        x = Math.max(
+                            0,
+                            Math.min(
+                                x,
+                                bouquet.clientWidth -
+                                size
+                            )
+                        );
+
+
+                        y = Math.max(
+                            0,
+                            Math.min(
+                                y,
+                                bouquet.clientHeight -
+                                size -
+                                80
+                            )
+                        );
+
+
+                        flower.style.left =
+                            x + "px";
+
+
+                        flower.style.top =
+                            y + "px";
+
+                    }
+
+
+                    function stop() {
+
+                        document.removeEventListener(
+                            "mousemove",
+                            move
+                        );
+
+                        document.removeEventListener(
+                            "mouseup",
+                            stop
+                        );
+
+                    }
+
+
+                    document.addEventListener(
+                        "mousemove",
+                        move
+                    );
+
+
+                    document.addEventListener(
+                        "mouseup",
+                        stop
+                    );
+
+                }
+
+            );
+
+        }
+
+
+        /* =========================
+           ROTATE FLOWER
+        ========================= */
+
+        function rotateFlower(amount) {
+
+            if (!selectedFlower) {
+                return;
+            }
+
+
+            let rotation =
+                parseInt(
+                    selectedFlower.dataset.rotation ||
+                    0
+                );
+
+
+            rotation += amount;
+
+
+            selectedFlower.dataset.rotation =
+                rotation;
+
+
+            updateFlowerTransform();
+
+        }
+
+
+        /* =========================
+           UPDATE TRANSFORM
+        ========================= */
+
+        function updateFlowerTransform() {
+
+            if (!selectedFlower) {
+                return;
+            }
+
+
+            const rotation =
+                parseInt(
+                    selectedFlower.dataset.rotation ||
+                    0
+                );
+
+
+            selectedFlower.style.transform =
+                "rotate(" +
+                rotation +
+                "deg)";
+
+        }
+
+
+        /* =========================
+           RESIZE FLOWER
+        ========================= */
+
+        function resizeFlower(amount) {
+
+            if (!selectedFlower) {
+                return;
+            }
+
+
+            let size =
+                parseInt(
+                    selectedFlower.dataset.size ||
+                    130
+                );
+
+
+            size += amount;
+
+
+            /* Minimum size */
+
+            if (size < 50) {
+                size = 50;
+            }
+
+
+            /* Maximum size */
+
+            if (size > 250) {
+                size = 250;
+            }
+
+
+            selectedFlower.dataset.size =
+                size;
+
+
+            selectedFlower.style.width =
+                size + "px";
+
+
+            selectedFlower.style.height =
+                size + "px";
+
+
+            /* Keep the flower inside */
+
+            let x =
+                parseFloat(
+                    selectedFlower.style.left
+                ) || 0;
+
+
+            let y =
+                parseFloat(
+                    selectedFlower.style.top
+                ) || 0;
+
+
+            x = Math.max(
+                0,
+                Math.min(
+                    x,
+                    bouquet.clientWidth - size
+                )
+            );
+
+
+            y = Math.max(
+                0,
+                Math.min(
+                    y,
+                    bouquet.clientHeight -
+                    size -
+                    80
+                )
+            );
+
+
+            selectedFlower.style.left =
+                x + "px";
+
+
+            selectedFlower.style.top =
+                y + "px";
+
+        }
+
+
+        /* =========================
+           DELETE FLOWER
+        ========================= */
+
+        function deleteFlower() {
+
+            if (!selectedFlower) {
+                return;
+            }
+
+
+            selectedFlower.remove();
+
+
+            selectedFlower = null;
+
+
+            document
+                .getElementById(
+                    "flowerControls"
+                )
+                .classList.remove(
+                    "active"
+                );
+
+        }
+
+
+        /* =========================
+           DESELECT FLOWER
+        ========================= */
+
+        bouquet.addEventListener(
+            "mousedown",
+
+            function(event) {
+
+                if (
+                    event.target === bouquet
+                ) {
+
+                    if (selectedFlower) {
+
+                        selectedFlower.classList.remove(
+                            "selected"
+                        );
+
+                    }
+
+
+                    selectedFlower = null;
+
+
+                    document
+                        .getElementById(
+                            "flowerControls"
+                        )
+                        .classList.remove(
+                            "active"
+                        );
+
+                }
+
+            }
+
+        );
+
+
+        /* =========================
+           CLEAR BOUQUET
+        ========================= */
+
+        function clearBouquet() {
+
+            document
+                .querySelectorAll(
+                    ".bouquet-flower"
+                )
+                .forEach(
+                    function(flower) {
+
+                        flower.remove();
+
+                    }
+                );
+
+
+            selectedFlower = null;
+
+
+            document
+                .getElementById(
+                    "flowerControls"
+                )
+                .classList.remove(
+                    "active"
+                );
+
+        }
+
+
+        /* =========================
+           FINISH BOUQUET
+        ========================= */
+
+        function finishBouquet() {
+
+            const flowers =
+                document.querySelectorAll(
+                    ".bouquet-flower"
+                );
+
+
+            /* No flowers */
+
+            if (flowers.length === 0) {
+
+                document.getElementById(
+                    "popupTitle"
+                ).innerText =
+                    "Your Bouquet is Empty..";
+
+
+                document.getElementById(
+                    "popupMessage"
+                ).innerText =
+                    "Please add at least one flower before placing your order.";
+
+
+                document.getElementById(
+                    "orderPopup"
+                ).style.display =
+                    "flex";
+
+
+                return;
+
+            }
+
+
+            /* Flowers exist */
+
+            document.getElementById(
+                "popupTitle"
+            ).innerText =
+                "Order Placed!";
+
+
+            document.getElementById(
+                "popupMessage"
+            ).innerText =
+                "Thank you for choosing J&L Florals! Your beautiful bouquet has been placed successfully.";
+
+
+            document.getElementById(
+                "orderPopup"
+            ).style.display =
+                "flex";
+
+        }
+
+
+        /* =========================
+           CLOSE POPUP
+        ========================= */
+
+        function closePopup() {
+
+            document.getElementById(
+                "orderPopup"
+            ).style.display =
+                "none";
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
